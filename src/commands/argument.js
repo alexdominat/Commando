@@ -1,6 +1,7 @@
-const { escapeMarkdown } = require('discord.js');
+const { escapeMarkdown, Message, RichEmbed } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
 const ArgumentUnionType = require('../types/union');
+
 
 /** A fancy argument */
 class Argument {
@@ -165,6 +166,7 @@ class Argument {
 		const prompts = [];
 		const answers = [];
 		let valid = !empty ? await this.validate(value, msg) : false;
+		let message;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -176,16 +178,23 @@ class Argument {
 					answers
 				};
 			}
+			const embed = new RichEmbed
+			.setColor(0xB1098B)
+			.setDescription(stripIndents`
+			${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+			${oneLine`
+				Respond with \`cancel\` to cancel the command.
+				${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+			`}
+		`)
 
 			// Prompt the user for a new value
-			prompts.push(await msg.reply(stripIndents`
-				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`}
-			`));
-
+			if (!message){
+				message = await msg.channel.send(embed)
+				prompts.push(message)
+			}
+			else prompts.push(await message.edit(embed));
+		
 			// Get the user's response
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
