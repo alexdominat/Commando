@@ -178,7 +178,7 @@ class Argument {
 					answers
 				};
 			}
-			const embed = new RichEmbed
+			const embed = new RichEmbed()
 			.setColor(0xB1098B)
 			.setDescription(stripIndents`
 			${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
