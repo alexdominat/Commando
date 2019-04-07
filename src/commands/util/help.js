@@ -36,7 +36,6 @@ module.exports = class HelpCommand extends Command {
 	.setTitle("Help")
 	.setDescription(`You have permission to use the following commands in ${message.guild.name}`)
 	.setColor(0xA60A8E)
-	.setFooter("Sponsored by axi#0001 @ DataWagon - Dedi, Colocation, VPS & web hosting -- www.datawagon.net")
 	.setTimestamp()
 	for (var x = 0;x<groups.length;x++){
 	var arr = []
